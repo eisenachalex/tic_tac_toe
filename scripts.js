@@ -122,6 +122,8 @@ if(count % 2 == 0) {
 			 $("#status").html("That move has been taken")
 		}
 		if(game.playerWon(current_player)) {
+			$("#status").html("You Win!")
+
 			return;
 		}
 		else {
@@ -145,6 +147,8 @@ if(count % 2 == 0) {
 				 $("#status").html("That move has been taken")
 			}
 			if(game.playerWon(current_player)) {
+				$("#status").html("You Win!")
+
 				return;
 			}
 			else {
