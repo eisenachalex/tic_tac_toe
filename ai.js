@@ -58,7 +58,6 @@ function closeCompetition(player) {
 			opposing_player = player_1;
 		}
 		for(var i = 0; i < game.winning_combos.length; i++) {
-			
 
 			if(combo_match_2(game.winning_combos[i], player.moves)) {
 				potential_win = game.winning_combos[i];
@@ -70,15 +69,15 @@ function closeCompetition(player) {
 					for(var i = 0; i < opposing_player.moves.length; i++) {
 					if(potential_win[0] == opposing_player.moves[i]) {
 						console.log("lost on 1")
-					return false;
+						break;
 					}
 					if(potential_win[1] == opposing_player.moves[i]) {
 						console.log("lost on 2")
-					return false;
+						break;
 					}	
 					if(potential_win[2] == opposing_player.moves[i]) {
 						console.log("lost on 3")
-					return false;
+						break;
 					}
 				}
 

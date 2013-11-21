@@ -17,8 +17,8 @@ function Player(name, marker) {
 
 
 function combo_match(arr, bigger_arr) {
-	match = 0
-	for(var i = 0; i < bigger_arr.length; i++) {
+	var length = bigger_arr.length;
+	for(var i = 0; i < length; i++) {
 		if(arr[0] == bigger_arr[i]) {
 			for(var i = 0; i < bigger_arr.length; i ++) {
 				if(arr[1] == bigger_arr[i]) {
@@ -47,19 +47,24 @@ function Game(player_1, player_2) {
 			[3,4,5],
 			[6,7,8],
 			[6,4,2],
-			[0,4,8]
-	];
+			[0,4,8]];
 
 	this.playerWon = function(player) {
 
-		for(var i = 0; i < this.winning_combos.length; i++) {
-			if(combo_match(this.winning_combos[i], player.moves)) {
+	winning_combos = [
+			[0,3,6],
+			[1,4,7],
+			[2,5,8],
+			[0,1,2],
+			[3,4,5],
+			[6,7,8],
+			[6,4,2],
+			[0,4,8]];
+
+		for(var i = 0; i < 8; i++) {
+			if(combo_match(winning_combos[i], player.moves)) {
 				return true;
 			}
-			else {
-				console.log("not a winner " + this.winning_combos[i]);
-			}
-
 		}
 
 
@@ -122,7 +127,7 @@ if(count % 2 == 0) {
 			 $("#status").html("That move has been taken")
 		}
 		if(game.playerWon(current_player)) {
-			$("#status").html("You Win!")
+			$("#status").html(current_player.name + "wins");
 
 			return;
 		}
@@ -147,7 +152,7 @@ if(count % 2 == 0) {
 				 $("#status").html("That move has been taken")
 			}
 			if(game.playerWon(current_player)) {
-				$("#status").html("You Win!")
+				$("#status").html(current_player.name + " wins")
 
 				return;
 			}
@@ -165,8 +170,8 @@ if(count % 2 == 0) {
 
 $(document).ready(function() {
 
-	player_1 = new Player("Alex", "X");
-	player_2 = new Player("Matt Jones", "O")
+	player_1 = new Player("Computer", "X");
+	player_2 = new Player("You", "O")
 	game = new Game(player_1, player_2);
 	game.playGame();
 	
