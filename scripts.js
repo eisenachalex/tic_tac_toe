@@ -80,13 +80,11 @@ function Game(player_1, player_2) {
             game.makeMove(current_player, move)
             $("td#" + move).html(current_player.marker);
             count+= 1;
-            console.log(current_player.moves);
         }
         else {
-        	$("#status").html("That move has been taken")
         }
         if(game.playerWon(current_player)) {
-       		$("#status").html(current_player.name + "wins");
+       		$("#status").html(current_player.name + " wins");
 			return;
         }
         else {
@@ -95,26 +93,25 @@ function Game(player_1, player_2) {
     }
 
     this.playGame = function() {
+    	var foo = "foo";
 		if(count % 2 == 0) {
 	        current_player = player_1;
-	        $("#status").html(current_player.name + "'s turn");
 	        if(closeCompetition(player_1)) {
-	                var move = close_comp;
+	            var move = close_comp;
 	        }
 	        else if(center()) {
 	            var move = 4;
 	        }
 	        else if(closeCompetition(player_2)) {
-	                var move = close_comp;
+	            var move = close_comp;
 	        }
 	        else {
-	        var move = game.board[0];
+	        	var move = game.board[0];
 	        }
 			game.executeMove(move);
-			}
+		}
 		else {
 			current_player = player_2;
-	   	 	$("#status").html(current_player.name + "'s turn");
 	   		$("td").click(function() {
 	    		var move = parseInt(($(this).attr("id")));
 	     		game.executeMove(move);
