@@ -8,6 +8,7 @@ body {
 .container {
 	width:900px;
 	margin:auto;
+	margin-top:20px;
 	position:relative;
 }
 
@@ -15,6 +16,7 @@ body {
 table {
 	text-align:center;
 	margin-left:300px;
+	display:none;
 }
 
 table td {
@@ -32,4 +34,13 @@ table td {
 	top:10px;
 	right:100px;
 	color:red;
+}
+
+.play_again {
+	width:300px;
+	margin:auto;
+	margin-top:20px;
+	font-size:20px;
+	margin-left:10px;
+	display:none;
 }

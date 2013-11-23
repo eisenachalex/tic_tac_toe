@@ -1,7 +1,23 @@
-
-var count = 1;
+var count = 0;
 var close_comp;
+var corner_counter;
 var opposing_player;
+var take_corner;
+var fork_catch;
+var take_other_corner;
+function gameFlow() {
+	$(".play_again").show();
+	$(".play_again").click(function(){
+		newGame();
+	})
+}
+function newGame(number) {
+	player_1 = new Player("Computer", "X");
+    player_2 = new Player("You", "O")
+    game = new Game(player_1, player_2);
+    count = number;
+    game.playGame();    
+}
 function Player(name, marker) {
         this.name = name;
         this.marker = marker;
@@ -52,11 +68,14 @@ function Game(player_1, player_2) {
                	return true;
             }
         }
-
+    }
+    this.tie = function() {
+    	if(this.board.length == 0 && ((player_1.moves.length != 0) || (player_2.moves.length != 0))) {
+    	return true;
+    	}
     }
     this.makeMove = function(player, move) { 
 	    player.moves.push(move);
-	    console.log("player move " + move)
 	    this.remove(move);
 	}
     this.moveTaken = function(attempted_move, player) {
@@ -81,29 +100,53 @@ function Game(player_1, player_2) {
             $("td#" + move).html(current_player.marker);
             count+= 1;
         }
-        else {
-        }
         if(game.playerWon(current_player)) {
        		$("#status").html(current_player.name + " wins");
+     		if(current_player == player_2) {
+       		console.log(current_player.name + " wins")
+       		console.log(current_player.moves);
+       	}
+       		gameFlow();
 			return;
         }
+        else if(game.tie()){
+       		$("#status").html("its a tie");
+        	gameFlow();
+        	return;
+        }
+
         else {
         	game.playGame();
         }
     }
 
     this.playGame = function() {
-    	var foo = "foo";
 		if(count % 2 == 0) {
 	        current_player = player_1;
 	        if(closeCompetition(player_1)) {
 	            var move = close_comp;
 	        }
-	        else if(center()) {
-	            var move = 4;
-	        }
 	        else if(closeCompetition(player_2)) {
 	            var move = close_comp;
+	        }
+
+	        else if(fork_catcher(player_2)) {
+	        	var move = fork_catch;
+	        }
+	        else if(fork_opp(player_2)) {
+	        	var move = corner_counter;
+	        }
+	     	else if(center()) {
+	            var move = 4;
+	        }
+	        else if(opposing_corner(player_1,player_2,[2,6])) {
+	        	var move = take_other_corner;
+	        }
+	        else if(opposing_corner(player_1,player_2,[0,8])) {
+	        	var move = take_other_corner;
+	        }
+	        else if(emptyCorner(game.board)) {
+	        	var move = take_corner;
 	        }
 	        else {
 	        	var move = game.board[0];
@@ -114,16 +157,23 @@ function Game(player_1, player_2) {
 			current_player = player_2;
 	   		$("td").click(function() {
 	    		var move = parseInt(($(this).attr("id")));
+	    	// for testing 
+	    	// var move = game.board[Math.floor(Math.random() * game.board.length)];
 	     		game.executeMove(move);
 	   		})
 		}
-   	 }
+   	}
 }
-
 $(document).ready(function() {
-        player_1 = new Player("Computer", "X");
-        player_2 = new Player("You", "O")
-        game = new Game(player_1, player_2);
-        game.playGame();        
+	$(document).on("click",".yes", function(){
+		$("#alert").hide();
+		$("table").show();
+		newGame(1);
+	});
+	$(document).on("click",".no",function(){
+		$("#alert").hide();
+		$("table").show();
+		newGame(0);
+	});
 })
 
