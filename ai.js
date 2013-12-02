@@ -1,179 +1,142 @@
-function center() {
-    for(var i = 0; i < game.board.length; i++) {
-       	if(game.board[i] == 4) {
-            return true;
+function AI(marker) {
+	this.marker = marker;
+    this.makeMove = function(board,player){
+    	if(this.oneLeft(board,this) || this.oneLeft(board,this) === 0 ){
+    	   move = this.oneLeft(board,this);
+    	}
+    	else if (this.oneLeft(board,player) || this.oneLeft(board,player) === 0){
+    	   move = this.oneLeft(board,player);
+    	}
+    	else if (this.forkCatch(board,player)){
+    	   move = this.forkCatch(board,player);
+    	}
+    	else if (this.forkOpp(board,player)){
+    	   move = this.forkOpp(board,player);
+    	}
+    	else if (this.center(board)){
+    	   move = 4;
+    	}
+    	else if (this.opposingCorner(board,player) || this.opposingCorner(board,player) === 0 ){    		
+    	   move = this.opposingCorner(board,player);
+    	}
+    	else if(this.emptyCorner(board) || this.emptyCorner(board) === 0){
+    	   move = this.emptyCorner(board);
+    	}
+    	else {
+    	   move = Math.floor(Math.random()*9);
+    	}
+        if(board[move] === 0){
+            board[move] = marker;
+        }
+        else{
+            this.makeMove(board,player);
         }
     }
-    return false;
-}
-function combo_match_2(arr, bigger_arr) {
-    match = 0;
-    result = [];
-        for(var i = 0; i < bigger_arr.length; i++) {
-                if(arr[0] == bigger_arr[i]) {
-                    match += 1;
-                    result.push(bigger_arr[i])
-                }
-                if(arr[1] == bigger_arr[i]) {
-	                match += 1;
-	                result.push(bigger_arr[i])
+    this.playerMoves = function(player,board){
+        playerMoves = [];
+        for(var i = 0; i < board.length; i++){
+            if(board[i] === player.marker) {
+                playerMoves.push(i);
+            }
+	   }
+        return playerMoves;
+    }
+    this.match = function(arr,bigArr){
+        matches = [];
+        for(var i = 0; i < bigArr.length; i++){
+            if(arr[0] == bigArr[i]){
+                matches.push(bigArr[i]);
+            }
+            if(arr[1] == bigArr[i]){
+                matches.push(bigArr[i]);
+            }		
+            if(arr[2] == bigArr[i]){
+                matches.push(bigArr[i]);
+            }	
+        }
+        return matches;
+    }
 
-                }
-                if(arr[2] == bigger_arr[i]) {
-                    match += 1;
-                    result.push(bigger_arr[i])
-                }             
+    this.oneLeft = function(board,player){
+	    var winningCombos = [
+                [0,3,6],
+                [1,4,7],
+                [2,5,8],
+                [0,1,2],
+                [3,4,5],
+                [6,7,8],
+                [6,4,2],
+                [0,4,8]
+        ];
+        var winner = [];
+        var boardMoves = this.playerMoves(player,board);
+        for(var i = 0; i < 8; i++){
+        	var length = this.match(winningCombos[i],boardMoves).length;
+        	if(length == 2){
+        		winningCombo = winningCombos[i];
+                for(var j = 0; j < 3; j++) {
+                    if(board[winningCombo[j]] === 0){
+                         winner.push(winningCombo[j]);
+                    }
+        		}
+        	}
         }
-        if(match == 2) {
-            return true;
+        return winner[0];
+	}
+    this.forkOpp = function(board,player){
+        if(board[2] === player.marker && board[6] === player.marker && board[3] === 0){
+		    return 3;
         }
-        else {
-            return false;
+        else if (board[0] === player.marker && board[8] === player.marker && board[3] === 0){
+            return 3;
         }
-}
-function removeSub(arr, index) {
-	arr.splice(index,1);
-}
-function closeCompetition(player) {
-	if(player == player_1) {
-	    opposing_player = player_2;
-	}
-	else {
-	    opposing_player = player_1;
-	}
-	for(var i = 0; i < game.winning_combos.length; i++) {
-	    if(combo_match_2(game.winning_combos[i], player.moves)) {
-	        potential_win = game.winning_combos[i];
-	        for(var i = 0; i < opposing_player.moves.length; i++) {
-                if(potential_win[0] == opposing_player.moves[i]) {
-                    break;
-                }
-                if(potential_win[1] == opposing_player.moves[i]) {
-                    break;
-                }        
-                if(potential_win[2] == opposing_player.moves[i]) {
-                    break;
-                }
-			}	
-			for(var i = 0; i < player.moves.length; i++) {
-		        if(potential_win[0] == player.moves[i]) {
-		            removeSub(potential_win, 0);
-		        }
-		        if(potential_win[1] == player.moves[i]) {
-		            removeSub(potential_win, 1);
-		        }
-		        if(potential_win[2] == player.moves[i]) {
-		            removeSub(potential_win, 2);
-		        }
-    		}
-	        close_comp = potential_win[0];
-	        return true;
-	    }
-	}
-}
-function fork_match(arr, bigger_arr) {
-    match = 0;
-        for(var i = 0; i < bigger_arr.length; i++) {
-                if(arr[0] == bigger_arr[i]) {
-                    match += 1;
-                }
-                if(arr[1] == bigger_arr[i]) {
-	                match += 1;
-                }                           
+        else if (board[4] === player.marker && board[8] === player.marker && board[6] === 0){
+            return 6;
         }
-        if(match == 2) {
-            return true;
+        else if (board[4] === player.marker && board[8] === player.marker && board[2] === 0){
+            return 2;
         }
-        else {
-            return false;
+    }
+    this.forkCatch = function(board,player){
+        if(board[5] === player.marker && board[7] === player.marker && board[8] === 0){
+            return 8;
         }
-}
-function fork_opp(player) {
-	corner_matches = [[2,6],[0,8]];
-	for(var i = 0; i < corner_matches.length; i++){
-		if(fork_match(corner_matches[i], player.moves)) {
-			corner_counter = 3;
-			return true;
-		}
-	}
-}
-function fork_catcher(player) {
-	if(combo_match_2([5,7], player.moves)) {
-		for(var i = 0; i < player.moves.length; i ++) {
-			if(player_1.moves[i] == 8) {
-				return false;
-			}
-		}
-		fork_catch = 8;
-		return true;
-	}
-
-}
-function opposing_corner(current_player, opposing, arr) {
-	function match(number, player) {
-	for(var i = 0; i < player.moves.length; i++) {
-		if(number == player.moves[i]) {
-			return true;
-		}
-	}
-	return false;
-	}
-	if(match(arr[0],opposing)){
-		if(match(arr[1],opposing)){
-			return false;
-		}
-		else if (match(arr[1],current_player)) {
-			return false;
-		}
-		else {
-			take_other_corner = arr[1];
-			return true;
-		}
-	}
-	else if(match(arr[1],opposing)){
-		if(match(arr[0],opposing)){
-			return false;
-		}
-		else if(match(arr[0],current_player)) {
-			return false;
-		}
-		else {
-			take_other_corner = arr[0];
-			return true;
-		}
-	}
-	else {
-		return false;
-	}
-
-}
-function emptyCorner(board) {
-	function match(number, board) {
-		for(var i = 0; i < board.length; i++) {
-			if(number == board[i]) {
-				return true;
-			}
-		}
-		return false;
-	}
-	if(match(0,board)) {
-		take_corner = 0;
-		return true;
-	}
-	else if (match(2,board)) {
-		take_corner = 2;
-		return true;
-	}
-	else if (match(6,board)) {
-		take_corner = 6;
-		return true;
-	}
-	else if (match(8,board)) {
-		take_corner = 8;
-		return true;
-	}
-	else {
-		return false;
-	}
+        else if(board[8] === player.marker && board[1] === player.marker && board[2] === 0){
+            return 2;
+        }
+    }
+    this.opposingCorner = function(board,player){
+        if(board[0] === player.marker && board[8] === 0){
+            return 8;
+        }
+        else if(board[8] === player.marker && board[0] === 0){
+            return 0;
+        }
+        else if(board[6] === player.marker && board[2] === 0){
+            return 2;
+        }
+        else if(board[2] === player.marker && board[6] === 0){
+            return 6;
+        }
+    }
+    this.center = function(board){
+        if(board[4] === 0){
+            return 4;
+        }
+    }
+    this.emptyCorner = function(board){
+        if(board[0] === 0){
+            return 0;
+        }
+        else if(board[2] === 0){
+            return 2;
+        }
+        else if(board[6] === 0){
+            return 6;
+        }
+        else if(board[8] === 0){
+            return 8;
+        }
+    }
 }
 
