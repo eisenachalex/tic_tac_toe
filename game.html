@@ -28,11 +28,60 @@
 	</table>
 	<div id="status"></div>
 	</div>
-<!-- 	<div id="alert">
+	<div id="alert">
 		<h3>Go first?</h3>
 		<button class="yes">Yes</button>
 		<button class="no">No</button>
-	</div> -->
+	</div>
 	<button class="play_again" onClick="window.location.reload()">Play Again?</button>
 </body>
 </html>
+
+<script>
+
+$(document).ready(function(){
+player1 = new Player("O");
+player2 = new AI("X");
+game = new Game(player1,player2)
+	$(".yes").click(function(){
+		$("#alert").hide();
+		$("table").show();
+		game.whoseTurn = 1;
+		gameFlow();
+	})
+	$(".no").click(function(){
+		$("#alert").hide();
+		$("table").show();
+		game.whoseTurn = 2;
+		gameFlow();
+	})
+
+	function gameFlow(){
+	if(game.whoseTurn % 2 === 0){
+		$("td#" + player2.makeMove(game.board,player1)).html(player2.marker);
+ 	        if(game.playGame() === "game over") {
+ 	        	$(".play_again").show();
+ 			}
+ 			else{
+ 				game.whoseTurn +=1;
+ 				gameFlow();
+ 			}
+	}
+	if(game.whoseTurn % 2 != 0){
+		$("td").click(function(){
+			var move = $(this).attr("id");
+			if(player1.makeMove(game.board,move) && game.playGame() != "game over"){
+          		$(this).html(player1.marker);
+				if(game.playGame() === "game over") {			
+         			$(".play_again").show();
+         		}
+         		else {
+         			game.whoseTurn += 1;      
+         			gameFlow(); 	   
+         		}
+        	}
+		})
+	}
+}
+})
+</script>

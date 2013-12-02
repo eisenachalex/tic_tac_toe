@@ -14,7 +14,6 @@ function Game(player1,player2){
             (board[6] === player.marker && board[7] === player.marker && board[8] === player.marker) ||
             (board[6] === player.marker && board[4] === player.marker && board[2] === player.marker) ||
             (board[0] === player.marker && board[4] === player.marker && board[8] === player.marker)) {
-                console.log(player.marker + " wins!")
                 return player;
         }
     }
@@ -35,14 +34,12 @@ function Game(player1,player2){
             return this.player1;
         }
     }
-    this.playGame = function(){
+    this.playGame = function(board){
         currentPlayer = this.findCurrentPlayer()
-        currentPlayer.makeMove(this.board,this.player1)
-        this.whoseTurn += 1;
         if(this.winner(this.board,currentPlayer) || this.gameOver()){
-        }
-        else{
-            this.playGame();
+            console.log("winner " + this.winner(this.board,currentPlayer))
+            console.log("gameOVer " + this.gameOver())
+            return "game over";
         }
     }
 }

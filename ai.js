@@ -27,6 +27,7 @@ function AI(marker) {
     	}
         if(board[move] === 0){
             board[move] = marker;
+            return move;
         }
         else{
             this.makeMove(board,player);

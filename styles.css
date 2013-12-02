@@ -16,6 +16,7 @@ body {
 table {
 	text-align:center;
 	margin-left:300px;
+	display:none;
 }
 
 table td {
