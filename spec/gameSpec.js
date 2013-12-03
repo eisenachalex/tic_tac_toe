@@ -65,23 +65,23 @@ describe("Finished Game", function() {
 	var player1 = new Player("X");
 	var player2 = new AI("O");
 	var game = new Game(player1,player2);
-	game.playGame();
 	it("should have a valid winner", function(){
 		game.board = ["X","X","X",0,0,0,0,0];
-		expect(game.gameOver()).toBe(undefined);
+		expect(game.draw()).toBe(undefined);
 		expect(game.winner(game.board,player1)).toEqual(player1);
 		expect(game.winner(game.board,player2)).not.toEqual(player2);
 	});
 	it("should finish in a tie with no winner", function(){
 		game.board = ["X","X","O","O","O","X","X","X"];
-		expect(game.gameOver()).toEqual("game over");
+		expect(game.draw()).toEqual("draw");
 		expect(game.winner(game.board,player1)).toBe(undefined);
 		expect(game.winner(game.board,player2)).toBe(undefined);
 	});
 	it("player1 should never win", function(){
 		for(var ai = 0; ai < 1000; ai ++) {
 			var game = new Game(player1,player2);
-			game.playGame();
+			//substitute move with random number generator for player1
+			game.gameOver();
 			expect(game.winner(game.board,player1)).not.toEqual(player1);
 		}
 	})

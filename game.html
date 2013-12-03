@@ -33,7 +33,7 @@
 		<button class="yes">Yes</button>
 		<button class="no">No</button>
 	</div>
-	<button class="play_again" onClick="window.location.reload()">Play Again?</button>
+	<button class="playAgain" onClick="window.location.reload()">Play Again?</button>
 </body>
 </html>
 
@@ -57,30 +57,25 @@ game = new Game(player1,player2)
 	})
 
 	function gameFlow(){
-	if(game.whoseTurn % 2 === 0){
-		$("td#" + player2.makeMove(game.board,player1)).html(player2.marker);
- 	        if(game.playGame() === "game over") {
- 	        	$(".play_again").show();
- 			}
- 			else{
- 				game.whoseTurn +=1;
- 				gameFlow();
- 			}
-	}
-	if(game.whoseTurn % 2 != 0){
-		$("td").click(function(){
-			var move = $(this).attr("id");
-			if(player1.makeMove(game.board,move) && game.playGame() != "game over"){
-          		$(this).html(player1.marker);
-				if(game.playGame() === "game over") {			
-         			$(".play_again").show();
-         		}
-         		else {
-         			game.whoseTurn += 1;      
-         			gameFlow(); 	   
-         		}
-        	}
-		})
+		if(game.gameOver(game.board) === "game over") {
+			$(".playAgain").show();	
+			return;       
+		}
+		else if(game.whoseTurn % 2 === 0){
+ 			spot = player2.makeMove(game.board,player1)
+ 			$("td#" + spot ).html(player2.marker);
+ 			game.whoseTurn +=1;
+ 			gameFlow();
+ 		}
+		else if(game.whoseTurn % 2 != 0){
+			$("td").click(function(){
+				var move = $(this).attr("id");
+				if(player1.makeMove(game.board,move)){
+          			$(this).html(player1.marker);
+     				game.whoseTurn += 1;      
+     				gameFlow(); 
+          	}
+   		})
 	}
 }
 })

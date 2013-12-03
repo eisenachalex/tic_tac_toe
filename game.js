@@ -14,17 +14,16 @@ function Game(player1,player2){
             (board[6] === player.marker && board[7] === player.marker && board[8] === player.marker) ||
             (board[6] === player.marker && board[4] === player.marker && board[2] === player.marker) ||
             (board[0] === player.marker && board[4] === player.marker && board[8] === player.marker)) {
-                return player;
+            return player;
         }
     }
-    this.gameOver = function(){
+    this.draw = function(){
         for(var i = 0; i < this.board.length; i++){
             if(this.board[i] === 0){
                 return;
             }
         }
-        console.log("it's a tie")
-        return "game over";
+        return "draw";
     }
     this.findCurrentPlayer = function(){
         if(this.whoseTurn % 2 === 0) {
@@ -34,11 +33,8 @@ function Game(player1,player2){
             return this.player1;
         }
     }
-    this.playGame = function(board){
-        currentPlayer = this.findCurrentPlayer()
-        if(this.winner(this.board,currentPlayer) || this.gameOver()){
-            console.log("winner " + this.winner(this.board,currentPlayer))
-            console.log("gameOVer " + this.gameOver())
+    this.gameOver = function(board){
+        if(this.winner(this.board,player1) || this.winner(this.board,player2) || this.draw()){
             return "game over";
         }
     }
